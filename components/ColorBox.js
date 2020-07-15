@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const ColorBox = ({ color, hex }) => {
+const ColorBox = ({ color, hex, textColor }) => {
   return (
     <View style={[styles.box, {backgroundColor: hex}]}>
-      <Text style={styles.text}>{color}: {hex}</Text>
+      <Text style={{color: textColor, fontWeight: 'bold'}}>{color}: {hex}</Text>
     </View>
   );
 };
@@ -16,10 +16,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  text: {
-    color: 'white',
-    fontWeight: 'bold',
   }
 });
 
