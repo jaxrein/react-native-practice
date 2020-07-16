@@ -20,10 +20,15 @@ const ColorBox = ({ color, hex }) => {
 const styles = StyleSheet.create({
   box: {
     padding: 10,
-    marginTop: 10,
+    marginBottom: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 2,
   }
 });
 
