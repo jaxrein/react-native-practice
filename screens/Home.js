@@ -4,6 +4,7 @@ import PalettePreview from '../components/PalettePreview';
 
 const Home = ({ navigation }) => {
   const [palettes, setPalettes] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const getPalettes = useCallback(async () => {
     const result = await fetch('https://color-palette-api.kadikraman.now.sh/palettes');
@@ -17,6 +18,12 @@ const Home = ({ navigation }) => {
     getPalettes();
   }, []);
 
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await getPalettes();
+    setIsRefreshing(false);
+  }, []);
+
   return (
     <FlatList
       style={styles.list}
@@ -28,6 +35,8 @@ const Home = ({ navigation }) => {
           palette={item}
         /> 
       )}
+      refreshing={isRefreshing}
+      onRefresh={handleRefresh}
     />
   );
 };
