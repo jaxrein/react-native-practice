@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import PalettePreview from '../components/PalettePreview';
 
 const Home = ({ navigation }) => {
@@ -37,6 +37,14 @@ const Home = ({ navigation }) => {
       )}
       refreshing={isRefreshing}
       onRefresh={handleRefresh}
+      ListHeaderComponent={
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('AddNewPalette')
+        }}>
+          <Text style={styles.button}>Add a color scheme</Text>
+        </TouchableOpacity>
+      }
     />
   );
 };
@@ -46,6 +54,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: 'white',
+  },
+  button: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'teal',
+    marginBottom: 20,
   },
 })
 
