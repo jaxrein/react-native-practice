@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import ColorLine from '../components/ColorLine';
+import React, { useState, useCallback } from 'react';
+import { Alert, FlatList, SafeAreaView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-const ColorPaletteModal = () => {
-  const [paletteName, setPaletteName] = useState('');
+const ColorPaletteModal = ({ navigation }) => {
+  const [newPaletteName, setPaletteName] = useState('');
+  const [selectedColors, setSelectedColors] = useState([]);
+
+  const handleSubmit = useCallback(() => {
+    if (!newPaletteName) {
+      Alert.alert('Please enter a palette name');
+    }
+    else if (selectedColors.length < 3) {
+      Alert.alert('Please select at least 3 colors to add to your palette');
+    }
+    else {
+      const newPalette = {
+        paletteName: newPaletteName,
+        colors: selectedColors,
+      };
+      navigation.navigate('Home', { newPalette });
+    }
+  }, [newPaletteName, selectedColors]);
 
   const COLORS = [
     { colorName: 'AliceBlue', hexCode: '#F0F8FF' },
@@ -155,22 +171,41 @@ const ColorPaletteModal = () => {
     { colorName: 'YellowGreen', hexCode: '#9ACD' },
   ];
 
+  const handleValueChange = useCallback((value, color) => {
+    if (value === true) {
+      setSelectedColors(colors => [...colors, color]);
+    } else {
+      setSelectedColors(colors => colors.filter(selectedColor => color.colorName !== selectedColors.colorName))
+    }
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text>Name of your color palette</Text>
       <TextInput
         style={styles.input}
-        value={paletteName}
+        value={newPaletteName}
         onChangeText={setPaletteName}
       />
       <FlatList
         data={COLORS}
         keyExtractor={item => item.colorName}
         renderItem={({ item }) => (
-          <ColorLine color={item.colorName} />
+          <View style={styles.line}>
+            <Text>{item.colorName}</Text>
+            <Switch
+              trackColor={{ false: 'darkgrey', true: 'paleturquoise' }}
+              thumbColor={{ false: 'lightslategray', true: 'teal' }}
+              ios_backgroundColor='gold'
+              value={!!selectedColors.find(color => color.colorName === item.colorName)}
+              onValueChange={selected => {handleValueChange(selected, item)}}
+            />
+          </View>
         )}
       />
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit}>
         <Text style={styles.button}>Submit</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -200,5 +235,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     padding: 5,
+  },
+  line: {
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
 });
