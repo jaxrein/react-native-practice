@@ -192,10 +192,14 @@ const ColorPaletteModal = ({ navigation }) => {
         keyExtractor={item => item.colorName}
         renderItem={({ item }) => (
           <View style={styles.line}>
-            <Text>{item.colorName}</Text>
+            <Text style={[styles.color,
+              { color: parseInt(item.hexCode.replace('#', ''), 16) > 0xffffff / 1.2
+                ? 'black' : 'white'
+              },
+              { backgroundColor: item.hexCode }]}>{item.colorName}</Text>
             <Switch
               trackColor={{ false: 'darkgrey', true: 'paleturquoise' }}
-              thumbColor={{ false: 'lightslategray', true: 'teal' }}
+              thumbColor={{ false: 'lightgray', true: 'teal' }}
               ios_backgroundColor='gold'
               value={!!selectedColors.find(color => color.colorName === item.colorName)}
               onValueChange={selected => {handleValueChange(selected, item)}}
@@ -204,7 +208,12 @@ const ColorPaletteModal = ({ navigation }) => {
         )}
       />
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button,
+          { backgroundColor: newPaletteName && selectedColors.length >= 3
+            ? 'teal' : 'grey'
+          }
+        ]}
+        disabled={ newPaletteName && selectedColors.length >= 3 ? false : true }
         onPress={handleSubmit}>
         <Text style={styles.button}>Submit</Text>
       </TouchableOpacity>
@@ -229,7 +238,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: 'teal',
     color: 'white',
     fontWeight: 'bold',
     borderRadius: 5,
@@ -239,9 +247,20 @@ const styles = StyleSheet.create({
   line: {
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 1,
-    padding: 10,
+    padding: 7,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+  },
+  color: {
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 5,
+    height: 30,
+    width: 325,
+    padding: 5,
+    textAlign: "center",
   },
 });
